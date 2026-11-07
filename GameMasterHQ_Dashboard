@@ -1,0 +1,460 @@
+<!doctype html>
+
+<html lang="en">
+
+<meta charset="utf-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>GameMaster HQ</title>
+
+<style>
+
+:root{font-family:system-ui,Arial;background:#090e19;color:#e8f0fc}
+
+*{box-sizing:border-box}
+
+body{margin:0}
+
+header{padding:18px 24px;background:#111d30;border-bottom:1px solid #294158;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+
+h1{margin:0;color:#67e5d1;font-size:23px}
+
+small,.muted{color:#9eb1c5}
+
+nav{display:flex;gap:8px;flex-wrap:wrap;padding:16px 24px}
+
+button{background:#1c3047;color:#eaf7ff;border:1px solid #355773;border-radius:9px;padding:10px 14px;cursor:pointer}
+
+button.active,button:hover{background:#126c74}
+
+main{padding:4px 24px 32px;max-width:1400px;margin:auto}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px}
+
+.card{background:#142136;border:1px solid #2b435b;border-radius:14px;padding:18px;margin-bottom:14px}
+
+h2{font-size:20px;margin:5px 0 15px}
+
+h3{font-size:16px;margin:0 0 12px;color:#73e6d4}
+
+input,textarea,select{width:100%;background:#0c1728;color:#fff;border:1px solid #37516b;padding:10px;border-radius:8px;margin:6px 0 12px}
+
+label{font-size:13px;color:#bbcedf}
+
+.stat{font-size:28px;font-weight:700;color:#fff}
+
+.tag{display:inline-block;border:1px solid #4c7581;padding:4px 8px;border-radius:20px;color:#9fe6da;margin:3px}
+
+ul{padding-left:20px;line-height:1.9}
+
+.hidden{display:none}
+
+.dice{font-size:28px;letter-spacing:9px;overflow-wrap:anywhere}
+
+.row{display:flex;gap:8px;flex-wrap:wrap}
+
+.row>*{flex:1}
+
+footer{padding:20px;color:#8ca5bb;text-align:center}
+
+</style>
+
+<header>
+
+<div>
+
+<h1>◈ GAME MASTER HQ</h1>
+
+<small>Tabletop campaign command center · Shadowrun 4E prototype</small>
+
+</div>
+
+<span class="tag">LOCAL DEMO · NO ACCOUNT</span>
+
+</header>
+
+<nav id="nav"></nav>
+
+<main id="content"></main>
+
+<footer>Unofficial personal-use dashboard prototype. No affiliation with Shadowrun rights holders.</footer>
+
+<script>
+
+const tabs=['Overview','Game Master','Player','Character','Dice Roller','Campaign'];
+
+let tab='Overview';
+
+const initial={
+
+campaign:'Seattle Shadows',
+
+session:'Session 01 · The First Run',
+
+notes:'Meet the fixer. Confirm the objective. Keep the team alive.',
+
+characters:[
+
+{name:'Ghost',role:'Hacker',metatype:'Human',body:3,agility:4,reaction:4,strength:2,charisma:3,intuition:4,logic:5,willpower:3,edge:2,physical:0,stun:0,nuyen:5000,karma:0},
+
+{name:'Rook',role:'Street Samurai',metatype:'Ork',body:6,agility:4,reaction:5,strength:5,charisma:2,intuition:3,logic:2,willpower:3,edge:2,physical:0,stun:0,nuyen:2000,karma:0}
+
+],
+
+selected:0,
+
+log:[]
+
+};
+
+let state;
+
+try{
+
+state=JSON.parse(localStorage.getItem('gmhq'))||initial;
+
+}catch{
+
+state=initial;
+
+}
+
+function save(){
+
+localStorage.setItem('gmhq',JSON.stringify(state));
+
+}
+
+function esc(s){
+
+return String(s).replace(/[&<>"']/g,c=>({
+
+'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+
+}[c]));
+
+}
+
+function field(key,label,type='text'){
+
+return `<label>${label}<input type="${type}" data-key="${key}" value="${esc(state[key]??'')}"></label>`;
+
+}
+
+function render(){
+
+document.getElementById('nav').innerHTML=tabs.map(t=>
+
+`<button class="${t===tab?'active':''}" onclick="tab='${t}';render()">${t}</button>`
+
+).join('');
+
+let c=state.characters[state.selected]||state.characters[0];
+
+let pages={
+
+'Overview':`
+
+<h2>Mission Control</h2>
+
+<div class="grid">
+
+<div class="card"><h3>Active campaign</h3><div class="stat">${esc(state.campaign)}</div><p class="muted">${esc(state.session)}</p></div>
+
+<div class="card"><h3>Active runners</h3><div class="stat">${state.characters.length}</div><p class="muted">Character records saved locally</p></div>
+
+<div class="card"><h3>Latest dice result</h3><div class="stat">${state.log.length?esc(state.log[0]):'—'}</div></div>
+
+</div>
+
+<div class="card">
+
+<h3>Quick access</h3>
+
+<div class="row">
+
+<button onclick="tab='Game Master';render()">Run session</button>
+
+<button onclick="tab='Character';render()">Character sheet</button>
+
+<button onclick="tab='Dice Roller';render()">Roll dice</button>
+
+</div>
+
+</div>`,
+
+'Game Master':`
+
+<h2>Game Master Console</h2>
+
+<div class="grid">
+
+<div class="card">
+
+<h3>Session control</h3>
+
+${field('session','Session title')}
+
+<label>GM notes<textarea id="gmnotes" rows="7">${esc(state.notes)}</textarea></label>
+
+<button onclick="state.notes=document.getElementById('gmnotes').value;save();render()">Save notes</button>
+
+</div>
+
+<div class="card">
+
+<h3>Team roster</h3>
+
+${state.characters.map((x,i)=>`<p><b>${esc(x.name)}</b> <span class="muted">· ${esc(x.metatype)} ${esc(x.role)}</span> <button onclick="state.selected=${i};save();tab='Character';render()">Open</button></p>`).join('')}
+
+<button onclick="addRunner()">+ New runner</button>
+
+</div>
+
+<div class="card">
+
+<h3>GM tools</h3>
+
+<p>Initiative tracking, encounter setup, NPC records, and secret GM rolls are planned for the next build.</p>
+
+<button onclick="tab='Dice Roller';render()">Open dice roller</button>
+
+</div>
+
+</div>`,
+
+'Player':`
+
+<h2>Player Dashboard</h2>
+
+<div class="grid">
+
+<div class="card">
+
+<h3>Your runner</h3>
+
+<select id="pick" onchange="state.selected=+this.value;save();render()">
+
+${state.characters.map((x,i)=>`<option value="${i}" ${i===state.selected?'selected':''}>${esc(x.name)}</option>`).join('')}
+
+</select>
+
+<div class="stat">${esc(c.name)}</div>
+
+<p>${esc(c.metatype)} · ${esc(c.role)}</p>
+
+<span class="tag">Karma ${c.karma}</span>
+
+<span class="tag">¥ ${c.nuyen}</span>
+
+</div>
+
+<div class="card">
+
+<h3>Condition monitors</h3>
+
+<p>Physical damage: ${c.physical}</p>
+
+<p>Stun damage: ${c.stun}</p>
+
+<p class="muted">Track damage in the Character tab.</p>
+
+</div>
+
+<div class="card">
+
+<h3>Current assignment</h3>
+
+<p>${esc(state.session)}</p>
+
+<p class="muted">Shared multiplayer access requires a backend; this demo is single-browser only.</p>
+
+</div>
+
+</div>`,
+
+'Character':`
+
+<h2>Character Sheet</h2>
+
+<div class="card">
+
+<select id="pick" onchange="state.selected=+this.value;save();render()">
+
+${state.characters.map((x,i)=>`<option value="${i}" ${i===state.selected?'selected':''}>${esc(x.name)}</option>`).join('')}
+
+</select>
+
+<div class="grid">
+
+${['name','role','metatype','body','agility','reaction','strength','charisma','intuition','logic','willpower','edge','physical','stun','nuyen','karma'].map(k=>`
+
+<label>${k.toUpperCase()}
+
+<input data-char="${k}" type="${['name','role','metatype'].includes(k)?'text':'number'}" value="${esc(c[k])}">
+
+</label>`).join('')}
+
+</div>
+
+<button onclick="saveCharacter()">Save character</button>
+
+<button onclick="addRunner()">+ Add character</button>
+
+<p class="muted">Basic editable profile; complete SR4E skills, qualities, gear, magic, and derived calculations are not implemented yet.</p>
+
+</div>`,
+
+'Dice Roller':`
+
+<h2>Shadowrun Dice Pool</h2>
+
+<div class="grid">
+
+<div class="card">
+
+<h3>Roll six-sided dice</h3>
+
+<label>Dice in pool<input id="pool" type="number" min="1" max="100" value="6"></label>
+
+<button onclick="roll()">Roll pool</button>
+
+<p id="rollResult" class="dice">⚄ ⚅ ⚂</p>
+
+<p id="rollSummary" class="muted">Hits are 5s and 6s. Ones count toward glitches.</p>
+
+</div>
+
+<div class="card">
+
+<h3>Roll history</h3>
+
+<ul>${state.log.slice(0,12).map(x=>`<li>${esc(x)}</li>`).join('')||'<li>No rolls yet</li>'}</ul>
+
+<button onclick="state.log=[];save();render()">Clear history</button>
+
+</div>
+
+</div>`,
+
+'Campaign':`
+
+<h2>Campaign Manager</h2>
+
+<div class="grid">
+
+<div class="card">
+
+<h3>Campaign details</h3>
+
+${field('campaign','Campaign name')}
+
+${field('session','Current session')}
+
+<button onclick="save();render()">Save campaign</button>
+
+</div>
+
+<div class="card">
+
+<h3>Session notes</h3>
+
+<textarea id="campaignNotes" rows="9">${esc(state.notes)}</textarea>
+
+<button onclick="state.notes=document.getElementById('campaignNotes').value;save();render()">Save notes</button>
+
+</div>
+
+</div>`
+
+};
+
+document.getElementById('content').innerHTML=pages[tab];
+
+document.querySelectorAll('[data-key]').forEach(el=>
+
+el.addEventListener('change',e=>{
+
+state[e.target.dataset.key]=e.target.value;
+
+save();
+
+})
+
+);
+
+}
+
+function saveCharacter(){
+
+let c=state.characters[state.selected];
+
+document.querySelectorAll('[data-char]').forEach(el=>{
+
+let k=el.dataset.char;
+
+c[k]=el.type==='number'?Number(el.value):el.value;
+
+});
+
+save();
+
+render();
+
+}
+
+function addRunner(){
+
+state.characters.push({
+
+name:'New Runner',role:'Unassigned',metatype:'Human',
+
+body:3,agility:3,reaction:3,strength:3,charisma:3,
+
+intuition:3,logic:3,willpower:3,edge:2,
+
+physical:0,stun:0,nuyen:0,karma:0
+
+});
+
+state.selected=state.characters.length-1;
+
+save();
+
+tab='Character';
+
+render();
+
+}
+
+function roll(){
+
+let n=Math.min(100,Math.max(1,Number(document.getElementById('pool').value)||1));
+
+let a=Array.from({length:n},()=>1+Math.floor(Math.random()*6));
+
+let hits=a.filter(v=>v>=5).length;
+
+let ones=a.filter(v=>v===1).length;
+
+let glitch=ones>=Math.ceil(n/2);
+
+let label=`${n}d6: ${hits} hits · ${ones} ones${glitch?hits===0?' · CRITICAL GLITCH':' · GLITCH':''}`;
+
+state.log.unshift(label);
+
+save();
+
+document.getElementById('rollResult').textContent=a.join(' ');
+
+document.getElementById('rollSummary').textContent=label;
+
+}
+
+render();
+
+</script>
+
+</html>
+
