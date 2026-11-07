@@ -4,23 +4,549 @@
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Game Master HQ</title>
+<title>Game Master HQ | Headquarters</title>
+
+<style>
+
+:root {
+
+  --bg:#090e19;
+
+  --panel:#15243a;
+
+  --teal:#62e5d4;
+
+  --gold:#d9ad68;
+
+  --text:#edf3fa;
+
+  --muted:#a8b8c9;
+
+}
+
+* {box-sizing:border-box}
+
+body {
+
+  margin:0;
+
+  background:var(--bg);
+
+  color:var(--text);
+
+  font-family:Arial,sans-serif;
+
+}
+
+header {
+
+  padding:20px 6%;
+
+  background:#111c2c;
+
+  border-bottom:1px solid #344b60;
+
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+
+  flex-wrap:wrap;
+
+  gap:15px;
+
+}
+
+.logo {
+
+  color:var(--gold);
+
+  font-size:22px;
+
+  font-weight:bold;
+
+  letter-spacing:2px;
+
+}
+
+header a {
+
+  color:var(--teal);
+
+  text-decoration:none;
+
+}
+
+.hero {
+
+  min-height:440px;
+
+  padding:85px 8%;
+
+  background:
+
+    radial-gradient(ellipse at 85% 30%,#22545a 0%,transparent 45%),
+
+    linear-gradient(120deg,#101c2c,#172d3d,#101725);
+
+  display:flex;
+
+  align-items:center;
+
+}
+
+.hero-content {max-width:700px}
+
+.eyebrow {
+
+  color:var(--teal);
+
+  letter-spacing:4px;
+
+  font-size:13px;
+
+}
+
+h1 {
+
+  font-family:Georgia,serif;
+
+  font-size:clamp(44px,7vw,76px);
+
+  line-height:1;
+
+  margin:20px 0;
+
+  color:white;
+
+}
+
+.hero h2 {
+
+  color:var(--gold);
+
+  letter-spacing:4px;
+
+  font-size:18px;
+
+}
+
+.hero p {
+
+  color:var(--muted);
+
+  font-size:17px;
+
+  line-height:1.8;
+
+  max-width:580px;
+
+}
+
+.button {
+
+  display:inline-block;
+
+  margin-top:20px;
+
+  padding:14px 24px;
+
+  background:#116b70;
+
+  color:white;
+
+  text-decoration:none;
+
+  border:1px solid var(--teal);
+
+  border-radius:7px;
+
+  font-weight:bold;
+
+}
+
+.button:hover {background:#198d8a}
+
+main {
+
+  max-width:1250px;
+
+  margin:auto;
+
+  padding:45px 22px;
+
+}
+
+.section-title {
+
+  font-family:Georgia,serif;
+
+  color:var(--gold);
+
+  font-size:28px;
+
+}
+
+.section-description {
+
+  color:var(--muted);
+
+  margin-bottom:25px;
+
+}
+
+.grid {
+
+  display:grid;
+
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+
+  gap:17px;
+
+}
+
+.card {
+
+  display:block;
+
+  padding:23px;
+
+  min-height:155px;
+
+  border:1px solid #344b60;
+
+  border-radius:10px;
+
+  background:linear-gradient(145deg,#192c43,#101a2a);
+
+  text-decoration:none;
+
+  color:var(--text);
+
+  transition:transform .2s,border-color .2s;
+
+}
+
+.card:hover {
+
+  border-color:var(--teal);
+
+  transform:translateY(-4px);
+
+}
+
+.symbol {
+
+  font-size:29px;
+
+  color:var(--teal);
+
+}
+
+.card h3 {
+
+  margin:14px 0 8px;
+
+  font-size:17px;
+
+}
+
+.card p {
+
+  color:var(--muted);
+
+  font-size:13px;
+
+  line-height:1.6;
+
+}
+
+.archetypes {margin-top:55px}
+
+.roster {
+
+  display:grid;
+
+  grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+
+  gap:12px;
+
+}
+
+.runner {
+
+  background:#15243a;
+
+  border:1px solid #344b60;
+
+  padding:18px 10px;
+
+  text-align:center;
+
+  border-radius:8px;
+
+  color:var(--teal);
+
+}
+
+.runner span {
+
+  display:block;
+
+  color:var(--gold);
+
+  font-size:23px;
+
+  margin-bottom:8px;
+
+}
+
+.status {
+
+  margin-top:45px;
+
+  padding:25px;
+
+  background:#14243a;
+
+  border:1px solid #344b60;
+
+  border-radius:12px;
+
+}
+
+.status h2 {
+
+  color:var(--gold);
+
+  font-family:Georgia,serif;
+
+}
+
+.status p {
+
+  color:var(--muted);
+
+  line-height:1.7;
+
+}
+
+footer {
+
+  text-align:center;
+
+  padding:30px;
+
+  border-top:1px solid #344b60;
+
+  color:var(--muted);
+
+  font-size:12px;
+
+}
+
+</style>
 
 </head>
 
 <body>
 
-    <h1>Game Master HQ</h1>
+<header>
 
-    <h2>Game Master HQ headquarters page</h2>
+  <div class="logo">◈ GAME MASTER HQ</div>
 
-    <p>Welcome to Game Master HQ!</p>
+  <a href="GameMasterHQ_Dashboard.html">ENTER HEADQUARTERS →</a>
 
-    <p>Our interactive RPG platform is under development.</p>
+</header>
+
+<section class="hero">
+
+  <div class="hero-content">
+
+    <div class="eyebrow">YOUR CAMPAIGN COMMAND CENTER</div>
+
+    <h1>GAME MASTER<br>HQ</h1>
+
+    <h2>SHADOWRUN · FOURTH EDITION</h2>
+
+    <p>
+
+      Welcome to your headquarters. Assemble your runners,
+
+      prepare your missions, manage your equipment, roll
+
+      the dice, and shape the world around your campaign.
+
+    </p>
+
+    <a class="button" href="GameMasterHQ_Dashboard.html">
+
+      ENTER THE HEADQUARTERS →
+
+    </a>
+
+  </div>
+
+</section>
+
+<main>
+
+  <h2 class="section-title">Headquarters Departments</h2>
+
+  <p class="section-description">
+
+    Your campaign tools, organized in one command center.
+
+  </p>
+
+  <div class="grid">
+
+    <a class="card" href="GameMasterHQ_Dashboard.html">
+
+      <div class="symbol">⌖</div>
+
+      <h3>Campaign Room</h3>
+
+      <p>Campaigns, missions, objectives and session planning.</p>
+
+    </a>
+
+    <a class="card" href="GameMasterHQ_Dashboard.html">
+
+      <div class="symbol">♙</div>
+
+      <h3>Character Terminal</h3>
+
+      <p>Runner profiles, attributes, skills and progression.</p>
+
+    </a>
+
+    <a class="card" href="GameMasterHQ_Dashboard.html">
+
+      <div class="symbol">⚔</div>
+
+      <h3>Armory</h3>
+
+      <p>Weapons, armor, ammunition and equipment.</p>
+
+    </a>
+
+    <a class="card" href="GameMasterHQ_Dashboard.html">
+
+      <div class="symbol">▣</div>
+
+      <h3>Inventory Vault</h3>
+
+      <p>Gear, items, valuables and team resources.</p>
+
+    </a>
+
+    <a class="card" href="GameMasterHQ_Dashboard.html">
+
+      <div class="symbol">⚄</div>
+
+      <h3>Dice Console</h3>
+
+      <p>Six-sided dice pools, rolls and results.</p>
+
+    </a>
+
+    <a class="card" href="GameMasterHQ_Dashboard.html">
+
+      <div class="symbol">▤</div>
+
+      <h3>Codex</h3>
+
+      <p>Rules, lore, world information and references.</p>
+
+    </a>
+
+    <a class="card" href="GameMasterHQ_Dashboard.html">
+
+      <div class="symbol">♧</div>
+
+      <h3>Party Network</h3>
+
+      <p>Manage your crew and fellow runners.</p>
+
+    </a>
+
+    <a class="card" href="GameMasterHQ_Dashboard.html">
+
+      <div class="symbol">♛</div>
+
+      <h3>Game Master Chamber</h3>
+
+      <p>Storyteller controls, encounters and secret notes.</p>
+
+    </a>
+
+  </div>
+
+  <section class="archetypes">
+
+    <h2 class="section-title">Our Runner Archetypes</h2>
+
+    <div class="roster">
+
+      <div class="runner"><span>⬟</span>Iron Warden</div>
+
+      <div class="runner"><span>⌘</span>Ghostwire</div>
+
+      <div class="runner"><span>✧</span>Voidweaver</div>
+
+      <div class="runner"><span>ϟ</span>Ascendant</div>
+
+      <div class="runner"><span>⚙</span>Machinist</div>
+
+      <div class="runner"><span>◈</span>Silver Tongue</div>
+
+      <div class="runner"><span>⌬</span>Nexus</div>
+
+      <div class="runner"><span>＋</span>New Runner</div>
+
+    </div>
+
+  </section>
+
+  <section class="status">
+
+    <h2>Mission Control</h2>
+
+    <p>
+
+      Your headquarters is operational. The campaign console
+
+      is ready for continued development. More departments,
+
+      character management, digital dice and multiplayer
+
+      capabilities will be integrated as the platform grows.
+
+    </p>
+
+    <a class="button" href="GameMasterHQ_Dashboard.html">
+
+      OPEN CAMPAIGN CONSOLE →
+
+    </a>
+
+  </section>
+
+</main>
+
+<footer>
+
+  ◈ GAME MASTER HQ · HEADQUARTERS
+
+  <p>Unofficial tabletop companion project.</p>
+
+</footer>
 
 </body>
 
