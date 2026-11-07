@@ -1,460 +1,1065 @@
-<!doctype html>
+<!DOCTYPE html>
 
 <html lang="en">
 
-<meta charset="utf-8">
+<head>
 
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
 
-<title>GameMaster HQ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Game Master HQ</title>
 
 <style>
 
-:root{font-family:system-ui,Arial;background:#090e19;color:#e8f0fc}
+:root {
 
-*{box-sizing:border-box}
+  --gold: #e7b85e;
 
-body{margin:0}
+  --cyan: #28e5e9;
 
-header{padding:18px 24px;background:#111d30;border-bottom:1px solid #294158;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+  --purple: #bd55ff;
 
-h1{margin:0;color:#67e5d1;font-size:23px}
+  --dark: #080b17;
 
-small,.muted{color:#9eb1c5}
+  --panel: rgba(8,17,34,.91);
 
-nav{display:flex;gap:8px;flex-wrap:wrap;padding:16px 24px}
+}
 
-button{background:#1c3047;color:#eaf7ff;border:1px solid #355773;border-radius:9px;padding:10px 14px;cursor:pointer}
+* { box-sizing: border-box; }
 
-button.active,button:hover{background:#126c74}
+body {
 
-main{padding:4px 24px 32px;max-width:1400px;margin:auto}
+  margin: 0;
 
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px}
+  min-height: 100vh;
 
-.card{background:#142136;border:1px solid #2b435b;border-radius:14px;padding:18px;margin-bottom:14px}
+  color: #f5ead5;
 
-h2{font-size:20px;margin:5px 0 15px}
+  font-family: Georgia, serif;
 
-h3{font-size:16px;margin:0 0 12px;color:#73e6d4}
+  background:
 
-input,textarea,select{width:100%;background:#0c1728;color:#fff;border:1px solid #37516b;padding:10px;border-radius:8px;margin:6px 0 12px}
+    radial-gradient(ellipse at 50% 43%, #173b65 0%, transparent 42%),
 
-label{font-size:13px;color:#bbcedf}
+    radial-gradient(ellipse at 85% 10%, #35104e 0%, transparent 35%),
 
-.stat{font-size:28px;font-weight:700;color:#fff}
+    linear-gradient(145deg,#080b17,#11172a 55%,#090b17);
 
-.tag{display:inline-block;border:1px solid #4c7581;padding:4px 8px;border-radius:20px;color:#9fe6da;margin:3px}
+  overflow-x: hidden;
 
-ul{padding-left:20px;line-height:1.9}
+}
 
-.hidden{display:none}
+body:before {
 
-.dice{font-size:28px;letter-spacing:9px;overflow-wrap:anywhere}
+  content:"";
 
-.row{display:flex;gap:8px;flex-wrap:wrap}
+  position:fixed;
 
-.row>*{flex:1}
+  inset:0;
 
-footer{padding:20px;color:#8ca5bb;text-align:center}
+  pointer-events:none;
+
+  opacity:.25;
+
+  background-image:
+
+    linear-gradient(90deg,transparent 49.8%,#b88b45 50%,transparent 50.2%),
+
+    linear-gradient(transparent 49.8%,#b88b45 50%,transparent 50.2%);
+
+  background-size:120px 120px;
+
+  mask-image:linear-gradient(to bottom,black,transparent);
+
+}
+
+header {
+
+  height:100px;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:space-between;
+
+  padding:15px 4%;
+
+  border-bottom:1px solid #9d713b;
+
+  background:linear-gradient(90deg,#090c19,#1b1930,#090c19);
+
+  box-shadow:0 8px 35px #000;
+
+  position:relative;
+
+  z-index:2;
+
+}
+
+.brand {
+
+  color:var(--gold);
+
+  font-size:clamp(20px,3vw,34px);
+
+  letter-spacing:4px;
+
+  text-shadow:0 0 18px #bd7c2b;
+
+  font-weight:bold;
+
+}
+
+.brand small {
+
+  display:block;
+
+  text-align:center;
+
+  color:#e5d8bd;
+
+  font-size:11px;
+
+  letter-spacing:7px;
+
+  margin-top:5px;
+
+}
+
+.header-actions {
+
+  display:flex;
+
+  gap:12px;
+
+}
+
+.header-actions button {
+
+  width:43px;
+
+  height:43px;
+
+  border:1px solid var(--cyan);
+
+  border-radius:12px;
+
+  color:var(--cyan);
+
+  background:#101c31;
+
+  font-size:20px;
+
+  cursor:pointer;
+
+}
+
+main {
+
+  max-width:1700px;
+
+  margin:auto;
+
+  padding:25px 3%;
+
+}
+
+.section-label {
+
+  color:var(--cyan);
+
+  font-size:12px;
+
+  letter-spacing:4px;
+
+  text-align:center;
+
+  margin:10px 0 20px;
+
+}
+
+.layout {
+
+  display:grid;
+
+  grid-template-columns:235px minmax(300px,1fr) 235px;
+
+  gap:20px;
+
+  align-items:stretch;
+
+}
+
+.panel {
+
+  background:var(--panel);
+
+  border:1px solid #927044;
+
+  border-radius:12px;
+
+  padding:17px;
+
+  box-shadow:
+
+    0 0 18px rgba(0,0,0,.8),
+
+    inset 0 0 20px rgba(30,110,150,.12);
+
+  position:relative;
+
+}
+
+.panel h2 {
+
+  font-size:18px;
+
+  color:var(--gold);
+
+  border-bottom:1px solid #66502f;
+
+  padding-bottom:12px;
+
+  margin-top:0;
+
+  letter-spacing:1px;
+
+}
+
+.nav-link {
+
+  display:flex;
+
+  align-items:center;
+
+  gap:12px;
+
+  width:100%;
+
+  padding:13px 10px;
+
+  margin:5px 0;
+
+  color:#eee3d0;
+
+  background:transparent;
+
+  border:1px solid transparent;
+
+  border-radius:7px;
+
+  text-align:left;
+
+  font-family:inherit;
+
+  font-size:15px;
+
+  cursor:pointer;
+
+  transition:.2s;
+
+}
+
+.nav-link:hover,
+
+.nav-link.active {
+
+  background:linear-gradient(90deg,#12465a,#102339);
+
+  border-color:var(--cyan);
+
+  color:#fff;
+
+  box-shadow:0 0 15px #16cbdc55;
+
+}
+
+.nav-icon { font-size:21px; width:27px; }
+
+.center {
+
+  min-height:520px;
+
+  display:flex;
+
+  flex-direction:column;
+
+  align-items:center;
+
+  justify-content:center;
+
+  overflow:hidden;
+
+  background:
+
+    radial-gradient(ellipse at center,#174f70 0%,#101a31 42%,#090d1c 80%);
+
+  border:1px solid #8e754b;
+
+  border-radius:15px;
+
+  box-shadow:inset 0 0 50px #000,0 0 30px #08c9e344;
+
+  position:relative;
+
+}
+
+.center:before,
+
+.center:after {
+
+  content:"";
+
+  position:absolute;
+
+  width:450px;
+
+  height:450px;
+
+  border:1px solid #20d9e655;
+
+  border-radius:50%;
+
+  box-shadow:0 0 35px #13cfe833;
+
+}
+
+.center:after {
+
+  width:350px;
+
+  height:350px;
+
+  border-style:dashed;
+
+  animation:rotate 45s linear infinite;
+
+}
+
+@keyframes rotate {
+
+  to { transform:rotate(360deg); }
+
+}
+
+.center-title {
+
+  color:var(--gold);
+
+  letter-spacing:5px;
+
+  font-size:14px;
+
+  z-index:1;
+
+  margin-bottom:25px;
+
+}
+
+.holo-table {
+
+  width:min(80%,400px);
+
+  aspect-ratio:1.5;
+
+  border-radius:50%;
+
+  border:5px solid #20dce9;
+
+  background:
+
+    radial-gradient(ellipse,#24d6df77,#0d4b6688 50%,#10172a 75%);
+
+  box-shadow:
+
+    0 0 18px var(--cyan),
+
+    0 0 65px #12c9f477,
+
+    inset 0 0 35px #12d4ed;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  position:relative;
+
+  z-index:1;
+
+  transform:perspective(400px) rotateX(12deg);
+
+}
+
+.world {
+
+  width:80%;
+
+  height:75%;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  font-size:clamp(55px,8vw,95px);
+
+  filter:drop-shadow(0 0 15px #37faff);
+
+  animation:glow 3s ease-in-out infinite alternate;
+
+}
+
+@keyframes glow {
+
+  from { filter:drop-shadow(0 0 8px #24cbdc); }
+
+  to { filter:drop-shadow(0 0 25px #a9ffff); }
+
+}
+
+.table-caption {
+
+  color:#b8faff;
+
+  letter-spacing:3px;
+
+  font-size:11px;
+
+  margin-top:35px;
+
+  z-index:1;
+
+}
+
+.center-message {
+
+  color:#d5c6a6;
+
+  font-size:14px;
+
+  text-align:center;
+
+  line-height:1.8;
+
+  margin:22px;
+
+  z-index:1;
+
+}
+
+.stat {
+
+  display:flex;
+
+  justify-content:space-between;
+
+  padding:13px 0;
+
+  border-bottom:1px solid #394252;
+
+  font-size:14px;
+
+}
+
+.stat span:last-child {
+
+  color:var(--cyan);
+
+  font-weight:bold;
+
+}
+
+.status-indicator {
+
+  width:9px;
+
+  height:9px;
+
+  display:inline-block;
+
+  border-radius:50%;
+
+  background:#35e7a0;
+
+  box-shadow:0 0 10px #35e7a0;
+
+  margin-right:8px;
+
+}
+
+.archetype {
+
+  padding:9px 5px;
+
+  border-bottom:1px solid #354052;
+
+  font-size:14px;
+
+}
+
+.archetype span {
+
+  color:var(--gold);
+
+  margin-right:8px;
+
+}
+
+.bottom-nav {
+
+  display:grid;
+
+  grid-template-columns:repeat(8,minmax(0,1fr));
+
+  gap:12px;
+
+  margin-top:25px;
+
+}
+
+.tile {
+
+  min-height:125px;
+
+  background:linear-gradient(145deg,#17263b,#080d1c);
+
+  border:1px solid #20cbd8;
+
+  border-radius:10px;
+
+  color:white;
+
+  cursor:pointer;
+
+  padding:12px 5px;
+
+  font-family:inherit;
+
+  transition:.25s;
+
+  box-shadow:0 5px 20px #0008;
+
+}
+
+.tile:hover {
+
+  transform:translateY(-7px);
+
+  box-shadow:0 0 22px #1ed9eb99;
+
+  border-color:var(--gold);
+
+}
+
+.tile .symbol {
+
+  font-size:35px;
+
+  display:block;
+
+  margin-bottom:10px;
+
+}
+
+.tile strong {
+
+  font-size:13px;
+
+  letter-spacing:.5px;
+
+}
+
+.welcome {
+
+  text-align:center;
+
+  margin:30px auto 10px;
+
+  padding:18px;
+
+  max-width:750px;
+
+  border:2px solid #a77b42;
+
+  background:linear-gradient(90deg,#171124,#172b40,#171124);
+
+  clip-path:polygon(4% 0,96% 0,100% 50%,96% 100%,4% 100%,0 50%);
+
+}
+
+.welcome h2 {
+
+  color:var(--gold);
+
+  letter-spacing:2px;
+
+  margin:4px;
+
+}
+
+.welcome p {
+
+  font-size:13px;
+
+  color:#c7d4df;
+
+}
+
+button:focus-visible {
+
+  outline:2px solid white;
+
+  outline-offset:3px;
+
+}
+
+#workspace {
+
+  display:none;
+
+  margin-top:25px;
+
+  padding:25px;
+
+  background:var(--panel);
+
+  border:1px solid var(--gold);
+
+  border-radius:12px;
+
+  min-height:250px;
+
+}
+
+#workspace h2 { color:var(--gold); }
+
+.workspace-close {
+
+  float:right;
+
+  background:#173c50;
+
+  color:white;
+
+  border:1px solid var(--cyan);
+
+  padding:8px 15px;
+
+  cursor:pointer;
+
+  border-radius:5px;
+
+}
+
+@media(max-width:1000px) {
+
+  .layout {
+
+    grid-template-columns:1fr 1fr;
+
+  }
+
+  .center { grid-column:1 / -1; grid-row:1; }
+
+  .bottom-nav { grid-template-columns:repeat(4,1fr); }
+
+}
+
+@media(max-width:600px) {
+
+  header { height:80px; }
+
+  .brand { font-size:19px; letter-spacing:2px; }
+
+  .brand small { font-size:9px; }
+
+  .layout { grid-template-columns:1fr; }
+
+  .center { grid-column:auto; grid-row:auto; min-height:390px; }
+
+  .bottom-nav { grid-template-columns:repeat(2,1fr); }
+
+  .panel { min-height:auto; }
+
+}
 
 </style>
 
+</head>
+
+<body>
+
 <header>
 
-<div>
+  <div class="brand">
 
-<h1>◈ GAME MASTER HQ</h1>
+    ◈ GAME MASTER HQ
 
-<small>Tabletop campaign command center · Shadowrun 4E prototype</small>
+    <small>HEADQUARTERS</small>
 
-</div>
+  </div>
 
-<span class="tag">LOCAL DEMO · NO ACCOUNT</span>
+  <div class="header-actions">
+
+    <button title="Player profile" onclick="openSection('Character Terminal')">♙</button>
+
+    <button title="Settings" onclick="openSection('Settings')">⚙</button>
+
+    <button title="Help" onclick="openSection('Codex')">?</button>
+
+  </div>
 
 </header>
 
-<nav id="nav"></nav>
+<main>
 
-<main id="content"></main>
+<div class="section-label">
 
-<footer>Unofficial personal-use dashboard prototype. No affiliation with Shadowrun rights holders.</footer>
+  ◆ &nbsp; YOUR CAMPAIGN COMMAND CENTER &nbsp; ◆
+
+</div>
+
+<div class="layout">
+
+<!-- LEFT PANEL -->
+
+<aside class="panel">
+
+  <h2>Headquarters</h2>
+
+  <button class="nav-link active" onclick="openSection('Central Command')">
+
+    <span class="nav-icon">🏰</span> Central Command
+
+  </button>
+
+  <button class="nav-link" onclick="openSection('Campaign Room')">
+
+    <span class="nav-icon">🌍</span> Campaign Room
+
+  </button>
+
+  <button class="nav-link" onclick="openSection('Character Terminal')">
+
+    <span class="nav-icon">🧙</span> Character Terminal
+
+  </button>
+
+  <button class="nav-link" onclick="openSection('Armory')">
+
+    <span class="nav-icon">⚔</span> Armory
+
+  </button>
+
+  <button class="nav-link" onclick="openSection('Inventory Vault')">
+
+    <span class="nav-icon">🧰</span> Inventory Vault
+
+  </button>
+
+  <button class="nav-link" onclick="openSection('Dice Console')">
+
+    <span class="nav-icon">🎲</span> Dice Console
+
+  </button>
+
+  <button class="nav-link" onclick="openSection('Codex')">
+
+    <span class="nav-icon">📖</span> Codex
+
+  </button>
+
+  <button class="nav-link" onclick="openSection('Party Network')">
+
+    <span class="nav-icon">👥</span> Party Network
+
+  </button>
+
+  <button class="nav-link" onclick="openSection('Game Master Chamber')">
+
+    <span class="nav-icon">👑</span> Game Master Chamber
+
+  </button>
+
+</aside>
+
+<!-- CENTRAL HOLOGRAPHIC TABLE -->
+
+<section class="center">
+
+  <div class="center-title">WORLD COMMAND INTERFACE</div>
+
+  <div class="holo-table">
+
+    <div class="world">🌐</div>
+
+  </div>
+
+  <div class="table-caption">THE WORLD IS YOURS TO CREATE</div>
+
+  <div class="center-message">
+
+    Your headquarters is ready.<br>
+
+    Build characters. Create worlds. Begin adventures.
+
+  </div>
+
+</section>
+
+<!-- RIGHT PANEL -->
+
+<aside class="panel">
+
+  <h2>Seven Archetypes</h2>
+
+  <div class="archetype"><span>✥</span> Iron Warden</div>
+
+  <div class="archetype"><span>✥</span> Ghostwire</div>
+
+  <div class="archetype"><span>✥</span> Voidweaver</div>
+
+  <div class="archetype"><span>✥</span> Ascendant</div>
+
+  <div class="archetype"><span>✥</span> Machinist</div>
+
+  <div class="archetype"><span>✥</span> Silver Tongue</div>
+
+  <div class="archetype"><span>✥</span> Nexus</div>
+
+  <h2 style="margin-top:25px">Mission Status</h2>
+
+  <div class="stat">
+
+    <span>Campaigns</span><span id="campaignCount">0</span>
+
+  </div>
+
+  <div class="stat">
+
+    <span>Characters</span><span id="characterCount">0</span>
+
+  </div>
+
+  <div class="stat">
+
+    <span>Party Members</span><span id="partyCount">0</span>
+
+  </div>
+
+  <div class="stat">
+
+    <span>Saved Worlds</span><span id="worldCount">0</span>
+
+  </div>
+
+  <p style="font-size:12px;color:#a8b7c6;margin-top:20px">
+
+    <span class="status-indicator"></span>
+
+    Headquarters Online
+
+  </p>
+
+</aside>
+
+</div>
+
+<!-- BOTTOM NAVIGATION -->
+
+<div class="bottom-nav">
+
+  <button class="tile" onclick="openSection('Campaign Room')">
+
+    <span class="symbol">🗺️</span>
+
+    <strong>Campaign Room</strong>
+
+  </button>
+
+  <button class="tile" onclick="openSection('Character Terminal')">
+
+    <span class="symbol">🧙</span>
+
+    <strong>Character Terminal</strong>
+
+  </button>
+
+  <button class="tile" onclick="openSection('Armory')">
+
+    <span class="symbol">⚔️</span>
+
+    <strong>Armory</strong>
+
+  </button>
+
+  <button class="tile" onclick="openSection('Inventory Vault')">
+
+    <span class="symbol">🧰</span>
+
+    <strong>Inventory Vault</strong>
+
+  </button>
+
+  <button class="tile" onclick="openSection('Dice Console')">
+
+    <span class="symbol">🎲</span>
+
+    <strong>Dice Console</strong>
+
+  </button>
+
+  <button class="tile" onclick="openSection('Codex')">
+
+    <span class="symbol">📖</span>
+
+    <strong>Codex</strong>
+
+  </button>
+
+  <button class="tile" onclick="openSection('Party Network')">
+
+    <span class="symbol">👥</span>
+
+    <strong>Party Network</strong>
+
+  </button>
+
+  <button class="tile" onclick="openSection('Game Master Chamber')">
+
+    <span class="symbol">👑</span>
+
+    <strong>Game Master Chamber</strong>
+
+  </button>
+
+</div>
+
+<div class="welcome">
+
+  <h2>Welcome to Game Master HQ</h2>
+
+  <p>
+
+    Build Characters · Run Campaigns · Manage Gear ·
+
+    Roll Dice · Create Worlds
+
+  </p>
+
+</div>
+
+<!-- INTERACTIVE WORKSPACE -->
+
+<section id="workspace">
+
+  <button class="workspace-close" onclick="closeSection()">Close ✕</button>
+
+  <h2 id="workspaceTitle">Headquarters</h2>
+
+  <div id="workspaceContent">
+
+    Select a headquarters station to begin.
+
+  </div>
+
+</section>
+
+</main>
 
 <script>
 
-const tabs=['Overview','Game Master','Player','Character','Dice Roller','Campaign'];
+const sectionDescriptions = {
 
-let tab='Overview';
+  "Central Command":
 
-const initial={
+    "Your central headquarters. Access every department and manage your adventures.",
 
-campaign:'Seattle Shadows',
+  "Campaign Room":
 
-session:'Session 01 · The First Run',
+    "Create campaigns, establish locations, develop storylines, and manage active adventures.",
 
-notes:'Meet the fixer. Confirm the objective. Keep the team alive.',
+  "Character Terminal":
 
-characters:[
+    "Create and manage characters. Define attributes, abilities, backgrounds, skills, and progression.",
 
-{name:'Ghost',role:'Hacker',metatype:'Human',body:3,agility:4,reaction:4,strength:2,charisma:3,intuition:4,logic:5,willpower:3,edge:2,physical:0,stun:0,nuyen:5000,karma:0},
+  "Armory":
 
-{name:'Rook',role:'Street Samurai',metatype:'Ork',body:6,agility:4,reaction:5,strength:5,charisma:2,intuition:3,logic:2,willpower:3,edge:2,physical:0,stun:0,nuyen:2000,karma:0}
+    "Manage weapons, armor, equipment, upgrades, and special items.",
 
-],
+  "Inventory Vault":
 
-selected:0,
+    "Store, organize, and track every item belonging to your characters and party.",
 
-log:[]
+  "Dice Console":
+
+    "Your dice rolling station. Prepare dice pools, roll, and review results.",
+
+  "Codex":
+
+    "Your reference library. Store rules, languages, creatures, locations, and world information.",
+
+  "Party Network":
+
+    "Manage party members, relationships, teams, and shared campaign information.",
+
+  "Game Master Chamber":
+
+    "Your private control room. Manage encounters, NPCs, world events, and campaign settings.",
+
+  "Settings":
+
+    "Customize your headquarters, display preferences, and application settings."
 
 };
 
-let state;
+function openSection(name) {
 
-try{
+  const workspace = document.getElementById("workspace");
 
-state=JSON.parse(localStorage.getItem('gmhq'))||initial;
+  document.getElementById("workspaceTitle").textContent = name;
 
-}catch{
+  document.getElementById("workspaceContent").textContent =
 
-state=initial;
+    sectionDescriptions[name] || "Headquarters workspace.";
+
+  workspace.style.display = "block";
+
+  document.querySelectorAll(".nav-link").forEach(button => {
+
+    button.classList.toggle(
+
+      "active",
+
+      button.textContent.trim().includes(name)
+
+    );
+
+  });
+
+  workspace.scrollIntoView({
+
+    behavior: "smooth",
+
+    block: "nearest"
+
+  });
 
 }
 
-function save(){
+function closeSection() {
 
-localStorage.setItem('gmhq',JSON.stringify(state));
-
-}
-
-function esc(s){
-
-return String(s).replace(/[&<>"']/g,c=>({
-
-'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-
-}[c]));
+  document.getElementById("workspace").style.display = "none";
 
 }
-
-function field(key,label,type='text'){
-
-return `<label>${label}<input type="${type}" data-key="${key}" value="${esc(state[key]??'')}"></label>`;
-
-}
-
-function render(){
-
-document.getElementById('nav').innerHTML=tabs.map(t=>
-
-`<button class="${t===tab?'active':''}" onclick="tab='${t}';render()">${t}</button>`
-
-).join('');
-
-let c=state.characters[state.selected]||state.characters[0];
-
-let pages={
-
-'Overview':`
-
-<h2>Mission Control</h2>
-
-<div class="grid">
-
-<div class="card"><h3>Active campaign</h3><div class="stat">${esc(state.campaign)}</div><p class="muted">${esc(state.session)}</p></div>
-
-<div class="card"><h3>Active runners</h3><div class="stat">${state.characters.length}</div><p class="muted">Character records saved locally</p></div>
-
-<div class="card"><h3>Latest dice result</h3><div class="stat">${state.log.length?esc(state.log[0]):'—'}</div></div>
-
-</div>
-
-<div class="card">
-
-<h3>Quick access</h3>
-
-<div class="row">
-
-<button onclick="tab='Game Master';render()">Run session</button>
-
-<button onclick="tab='Character';render()">Character sheet</button>
-
-<button onclick="tab='Dice Roller';render()">Roll dice</button>
-
-</div>
-
-</div>`,
-
-'Game Master':`
-
-<h2>Game Master Console</h2>
-
-<div class="grid">
-
-<div class="card">
-
-<h3>Session control</h3>
-
-${field('session','Session title')}
-
-<label>GM notes<textarea id="gmnotes" rows="7">${esc(state.notes)}</textarea></label>
-
-<button onclick="state.notes=document.getElementById('gmnotes').value;save();render()">Save notes</button>
-
-</div>
-
-<div class="card">
-
-<h3>Team roster</h3>
-
-${state.characters.map((x,i)=>`<p><b>${esc(x.name)}</b> <span class="muted">· ${esc(x.metatype)} ${esc(x.role)}</span> <button onclick="state.selected=${i};save();tab='Character';render()">Open</button></p>`).join('')}
-
-<button onclick="addRunner()">+ New runner</button>
-
-</div>
-
-<div class="card">
-
-<h3>GM tools</h3>
-
-<p>Initiative tracking, encounter setup, NPC records, and secret GM rolls are planned for the next build.</p>
-
-<button onclick="tab='Dice Roller';render()">Open dice roller</button>
-
-</div>
-
-</div>`,
-
-'Player':`
-
-<h2>Player Dashboard</h2>
-
-<div class="grid">
-
-<div class="card">
-
-<h3>Your runner</h3>
-
-<select id="pick" onchange="state.selected=+this.value;save();render()">
-
-${state.characters.map((x,i)=>`<option value="${i}" ${i===state.selected?'selected':''}>${esc(x.name)}</option>`).join('')}
-
-</select>
-
-<div class="stat">${esc(c.name)}</div>
-
-<p>${esc(c.metatype)} · ${esc(c.role)}</p>
-
-<span class="tag">Karma ${c.karma}</span>
-
-<span class="tag">¥ ${c.nuyen}</span>
-
-</div>
-
-<div class="card">
-
-<h3>Condition monitors</h3>
-
-<p>Physical damage: ${c.physical}</p>
-
-<p>Stun damage: ${c.stun}</p>
-
-<p class="muted">Track damage in the Character tab.</p>
-
-</div>
-
-<div class="card">
-
-<h3>Current assignment</h3>
-
-<p>${esc(state.session)}</p>
-
-<p class="muted">Shared multiplayer access requires a backend; this demo is single-browser only.</p>
-
-</div>
-
-</div>`,
-
-'Character':`
-
-<h2>Character Sheet</h2>
-
-<div class="card">
-
-<select id="pick" onchange="state.selected=+this.value;save();render()">
-
-${state.characters.map((x,i)=>`<option value="${i}" ${i===state.selected?'selected':''}>${esc(x.name)}</option>`).join('')}
-
-</select>
-
-<div class="grid">
-
-${['name','role','metatype','body','agility','reaction','strength','charisma','intuition','logic','willpower','edge','physical','stun','nuyen','karma'].map(k=>`
-
-<label>${k.toUpperCase()}
-
-<input data-char="${k}" type="${['name','role','metatype'].includes(k)?'text':'number'}" value="${esc(c[k])}">
-
-</label>`).join('')}
-
-</div>
-
-<button onclick="saveCharacter()">Save character</button>
-
-<button onclick="addRunner()">+ Add character</button>
-
-<p class="muted">Basic editable profile; complete SR4E skills, qualities, gear, magic, and derived calculations are not implemented yet.</p>
-
-</div>`,
-
-'Dice Roller':`
-
-<h2>Shadowrun Dice Pool</h2>
-
-<div class="grid">
-
-<div class="card">
-
-<h3>Roll six-sided dice</h3>
-
-<label>Dice in pool<input id="pool" type="number" min="1" max="100" value="6"></label>
-
-<button onclick="roll()">Roll pool</button>
-
-<p id="rollResult" class="dice">⚄ ⚅ ⚂</p>
-
-<p id="rollSummary" class="muted">Hits are 5s and 6s. Ones count toward glitches.</p>
-
-</div>
-
-<div class="card">
-
-<h3>Roll history</h3>
-
-<ul>${state.log.slice(0,12).map(x=>`<li>${esc(x)}</li>`).join('')||'<li>No rolls yet</li>'}</ul>
-
-<button onclick="state.log=[];save();render()">Clear history</button>
-
-</div>
-
-</div>`,
-
-'Campaign':`
-
-<h2>Campaign Manager</h2>
-
-<div class="grid">
-
-<div class="card">
-
-<h3>Campaign details</h3>
-
-${field('campaign','Campaign name')}
-
-${field('session','Current session')}
-
-<button onclick="save();render()">Save campaign</button>
-
-</div>
-
-<div class="card">
-
-<h3>Session notes</h3>
-
-<textarea id="campaignNotes" rows="9">${esc(state.notes)}</textarea>
-
-<button onclick="state.notes=document.getElementById('campaignNotes').value;save();render()">Save notes</button>
-
-</div>
-
-</div>`
-
-};
-
-document.getElementById('content').innerHTML=pages[tab];
-
-document.querySelectorAll('[data-key]').forEach(el=>
-
-el.addEventListener('change',e=>{
-
-state[e.target.dataset.key]=e.target.value;
-
-save();
-
-})
-
-);
-
-}
-
-function saveCharacter(){
-
-let c=state.characters[state.selected];
-
-document.querySelectorAll('[data-char]').forEach(el=>{
-
-let k=el.dataset.char;
-
-c[k]=el.type==='number'?Number(el.value):el.value;
-
-});
-
-save();
-
-render();
-
-}
-
-function addRunner(){
-
-state.characters.push({
-
-name:'New Runner',role:'Unassigned',metatype:'Human',
-
-body:3,agility:3,reaction:3,strength:3,charisma:3,
-
-intuition:3,logic:3,willpower:3,edge:2,
-
-physical:0,stun:0,nuyen:0,karma:0
-
-});
-
-state.selected=state.characters.length-1;
-
-save();
-
-tab='Character';
-
-render();
-
-}
-
-function roll(){
-
-let n=Math.min(100,Math.max(1,Number(document.getElementById('pool').value)||1));
-
-let a=Array.from({length:n},()=>1+Math.floor(Math.random()*6));
-
-let hits=a.filter(v=>v>=5).length;
-
-let ones=a.filter(v=>v===1).length;
-
-let glitch=ones>=Math.ceil(n/2);
-
-let label=`${n}d6: ${hits} hits · ${ones} ones${glitch?hits===0?' · CRITICAL GLITCH':' · GLITCH':''}`;
-
-state.log.unshift(label);
-
-save();
-
-document.getElementById('rollResult').textContent=a.join(' ');
-
-document.getElementById('rollSummary').textContent=label;
-
-}
-
-render();
 
 </script>
 
-</html>
+</body>
 
+</html>
